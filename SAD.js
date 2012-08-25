@@ -16,6 +16,7 @@ function init()
 		if (moderationActif.className == "col_moder")
 		{
 			initLockBouton();
+			colonneSelectionTopic();
 		}
 	}
 }
@@ -71,5 +72,68 @@ function initLockBouton()
 		})
 	});
 }
+
+function colonneSelectionTopic()
+{
+	//Creation du head pour la colonne.
+	var nombresSujets = document.querySelector("#liste_topics tbody").childElementCount;
+	var colonneHeadSujet = document.querySelector("#liste_topics tbody tr").getElementsByTagName('th')[0];
+	var colonneHeadSelection = document.createElement('th');
+	var allSelection = 0;
+	colonneHeadSelection.id = "cselect";
+	colonneHeadSelection.className = "col_moder";
+	document.querySelector("#liste_topics tbody tr").insertBefore(colonneHeadSelection, colonneHeadSujet);
+	//Creation du corps de la colonne.
+	for (var i = 1 ; i < nombresSujets ; i++)
+	{
+		var colonneCorpsSujet = document.querySelector("#liste_topics tbody").getElementsByTagName("tr")[i].getElementsByTagName("td")[0];
+		var colonneCorpsSelection = document.createElement('td');
+		var checkBoxSelection = document.createElement('input');
+		var targetList = localStorage['targetList'];
+		var pseudoListe = document.createElement("option");
+		pseudoListe.id = "autoSelec";
+		pseudoListe.name = "autoSelec";
+		pseudoListe.innerHTML = targetList;
+		var targetNumber = pseudoListe.childElementCount;
+		var pseudonyme = document.querySelector("#liste_topics tbody").getElementsByTagName("tr")[i].getElementsByClassName("pseudo")[0].innerHTML;
+		checkBoxSelection.id = "selec" + [i];
+		checkBoxSelection.name = "selec" + [i];
+		checkBoxSelection.type = "checkbox";
+		checkBoxSelection.align = "center";
+		for (var j = 0 ; j < targetNumber ; j++)
+		{
+			if (pseudoListe.getElementsByTagName("option")[j].innerHTML == pseudonyme)
+			{
+				checkBoxSelection.checked = "checked";
+			}
+		}
+		document.querySelector("#liste_topics tbody").getElementsByTagName("tr")[i].insertBefore(colonneCorpsSelection, colonneCorpsSujet).appendChild(checkBoxSelection);
+	}
+	var headCheckBoxSelection = document.createElement('input');
+	headCheckBoxSelection.id = "selec0";
+	headCheckBoxSelection.name = "selec0";
+	headCheckBoxSelection.type = "checkbox";
+	headCheckBoxSelection.align = "center";
+	headCheckBoxSelection.addEventListener("click", function()
+	{ 
+		if (allSelection == 0)
+		{
+			for ( var i = 1 ; i < nombresSujets ; i++)
+			{
+				document.querySelector("#selec" + [i]).checked = "checked";
+			}
+			allSelection = 1;
+		}
+		else if (allSelection == 1)
+		{
+			for ( var i = 1 ; i < nombresSujets ; i++)
+			{
+				document.querySelector("#selec" + [i]).checked = "";
+			}
+			allSelection = 0;
+		}
+	}, false);
+	document.querySelector("#cselect").appendChild(headCheckBoxSelection);
+};
 
 init();
