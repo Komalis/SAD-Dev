@@ -6,7 +6,7 @@
 // @version     1.0.0
 // ==/UserScript==
 
-var url = 'https://raw.github.com/Komalis/SAD/master/SAD/Chrome/';
+var url = 'https://raw.github.com/Komalis/SAD-Dev/master/SAD.js';
 var script = document.createElement('script');
 script.src = url + 'SAD.js';
 document.body.appendChild(script);
