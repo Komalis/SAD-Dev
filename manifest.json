@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "SAD",
+  "version": "1.0.0",
+  "description": "Search and Destroy",
+  "icons": { 
+    "16": "icon/16px.ico",
+    "32": "icon/32px.png",
+    "48": "icon/48px.png",
+    "128": "icon/128px.png" },
+  "permissions": [
+    "http://www.jeuxvideo.com/forums/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://www.jeuxvideo.com/forums/*"],
+      "js": ["jquery.min.js", "SAD.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    "SAD.js"
+  ]
+}
