@@ -12,7 +12,7 @@ var isMassDelock = 0;
 function init()
 {
 	var urlForum = window.location.href;
-	if (urlForum.split("/")[4].split("-")[0] == 0 || urlForum.split("-")[6] == 2)
+	if (urlForum == "http://craftinor.forumjv.com/0-79351-0-1-0-1-0-0.htm")
 	{
 		//Verification de la connection a la moderation.
 		var moderationActif = document.querySelector("#liste_topics tbody tr").getElementsByTagName('th')[1];
@@ -26,6 +26,28 @@ function init()
 			interfaceMassLock();
 			//Initialisation du bouton de Mass Délock
 			interfaceMassDelock();
+			//Initialisation du bouton de Mass Kick
+			interfaceMassKick()
+			//Initialisation des boutons de Lock
+			boutonLock();
+		}
+	}
+	else if (urlForum.split("/")[4].split("-")[0] == 0 || urlForum.split("-")[6] == 2)
+	{
+		//Verification de la connection a la moderation.
+		var moderationActif = document.querySelector("#liste_topics tbody tr").getElementsByTagName('th')[1];
+		if (moderationActif.className == "col_moder")
+		{
+			//Initialisation de la Colonne de Séléction
+			colonneSelectionTopic();
+			//Initialisation de l'état de l'arme
+			interfaceBase();
+			//Initialisation du bouton de Mass Lock
+			interfaceMassLock();
+			//Initialisation du bouton de Mass Délock
+			interfaceMassDelock();
+			//Initialisation du bouton de Mass Kick
+			interfaceMassKick()
 			//Initialisation des boutons de Lock
 			boutonLock();
 		}
@@ -36,6 +58,7 @@ function init()
 function interfaceBase()
 {
 	var blocModeration = $(".bloc3")[0].getElementsByClassName('bloc_inner')[0];
+	//var blocModeration = $("#modo")[0].getElementsByClassName('bloc_inner')[0];
 	var eltLienBase = blocModeration.getElementsByTagName('p')[0];
 	var armeEtat = document.createElement('p');
 	armeEtat.id = "ArmeEtat";
@@ -49,6 +72,7 @@ function interfaceBase()
 function interfaceMassLock()
 {
 	var blocModeration = $(".bloc3")[0].getElementsByClassName('bloc_inner')[0];
+	//var blocModeration = $("#modo")[0].getElementsByClassName('bloc_inner')[0];
 	var eltLienBase = blocModeration.getElementsByTagName('p')[1];
 	var massLockBouton = document.createElement('a');
 	massLockBouton.id = "MassLock";
@@ -63,6 +87,7 @@ function interfaceMassLock()
 function interfaceMassDelock()
 {
 	var blocModeration = $(".bloc3")[0].getElementsByClassName('bloc_inner')[0];
+	//var blocModeration = $("#modo")[0].getElementsByClassName('bloc_inner')[0];
 	var eltLienBase = blocModeration.getElementsByTagName('p')[1];
 	var massDelockBouton = document.createElement('a');
 	massDelockBouton.id = "MassDélock";
@@ -71,6 +96,21 @@ function interfaceMassDelock()
 	massDelockBouton.href = "javascript:void(0)";
 	massDelockBouton.onclick = function(){ massDelock(); };
 	blocModeration.insertBefore(massDelockBouton, eltLienBase);
+}
+
+//Ajout du Mass Kick
+function interfaceMassKick()
+{
+	var blocModeration = $(".bloc3")[0].getElementsByClassName('bloc_inner')[0];
+	//var blocModeration = $("#modo")[0].getElementsByClassName('bloc_inner')[0];
+	var eltLienBase = blocModeration.getElementsByTagName('p')[1];
+	var massMassKick = document.createElement('a');
+	massMassKick.id = "MassKick";
+	massMassKick.className = "lien_base";
+	massMassKick.innerHTML = "Mass Kick";
+	massMassKick.href = "javascript:void(0)";
+	massMassKick.onclick = function(){ massKick(); };
+	blocModeration.insertBefore(massMassKick, eltLienBase);
 }
 
 //Change l'état de l'Arme de modération.
@@ -224,6 +264,47 @@ function massDelock()
 					$('#lock' + i).click();
 					isMassDelock = 0;
 				}
+			}
+		}
+	}
+};
+
+//Fonction de Mass Kick
+function massKick()
+{
+	var kickConfirmation = confirm('Êtes vous sûr de vouloir EXCLURE ces pseudonymes pendant 72H ?'); 
+	if (kickConfirmation)
+	{
+		changeEtat("Mass Kick", "green")
+		//Ce qui se passe quand on appuit sur le bouton.
+		var nombresSujets = document.querySelector("#liste_topics tbody").childElementCount;
+		for (var i = 1 ; i < nombresSujets ; i++)
+		{
+			var checkBoxSelection = document.querySelector("#selec" + i);
+			if (checkBoxSelection.checked)
+			{
+				var urlTopic = checkBoxSelection.parentNode.parentNode.getElementsByTagName("td")[4].getElementsByTagName("a")[0].href;
+				jQuery.ajax(
+				{
+					type: 'GET',
+					url: urlTopic,
+					success: function(data)
+					{
+						var kickPage = document.implementation.createHTMLDocument("Kick");
+						kickPage.documentElement.innerHTML = data;
+						var urlKick = kickPage.getElementsByClassName('date')[0].getElementsByTagName('a')[0].href;
+						urlKick += "&motif=Autre";
+						jQuery.ajax(
+						{
+							type: 'GET',
+							url: urlKick,
+							success: function(data)
+							{
+								changeEtat("Repos", "red");
+							}
+						})
+					}
+				})
 			}
 		}
 	}
