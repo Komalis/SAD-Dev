@@ -6,7 +6,8 @@
 // @version     1.0.0
 // ==/UserScript==
 
-var url = 'https://raw.github.com/Komalis/SAD-Dev/master/';
+//var url = 'https://raw.github.com/Komalis/SAD-Dev/master/';
+var url = 'http://localhost/';
 var script = document.createElement('script');
 script.src = url + 'SAD.js';
 document.body.appendChild(script);
