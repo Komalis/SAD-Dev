@@ -8,11 +8,35 @@
 var isMassLock = 0;
 var isMassDelock = 0;
 
+//Initialisation de l'Arme
+function init()
+{
+	var urlForum = window.location.href;
+	if (urlForum.split("/")[4].split("-")[0] == 0 || urlForum.split("-")[6] == 2)
+	{
+		//Verification de la connection a la moderation.
+		var moderationActif = document.querySelector("#liste_topics tbody tr").getElementsByTagName('th')[1];
+		if (moderationActif.className == "col_moder")
+		{
+			//Initialisation de la Colonne de Séléction
+			colonneSelectionTopic();
+			//Initialisation de l'état de l'arme
+			interfaceBase();
+			//Initialisation du bouton de Mass Lock
+			interfaceMassLock();
+			//Initialisation du bouton de Mass Délock
+			interfaceMassDelock();
+			//Initialisation des boutons de Lock
+			boutonLock();
+		}
+	}
+}
+
 //Ajout de l'état de l'Arme de modération.
 function interfaceBase()
 {
 	var blocModeration = $(".bloc3")[0].getElementsByClassName('bloc_inner')[0];
-	var eltLienBase = blocModeration.getElementsByTagName('p')[1];
+	var eltLienBase = blocModeration.getElementsByTagName('p')[0];
 	var armeEtat = document.createElement('p');
 	armeEtat.id = "ArmeEtat";
 	armeEtat.className = "lien_base";
@@ -57,6 +81,7 @@ function changeEtat(etat, color)
 	armeEtat.innerHTML += "<font color='"+ color +"'>"+ etat +"</font>"
 } 
 
+//Fonction de Lock
 function lock(idTopic)
 {
 	if (isMassLock)
@@ -103,6 +128,7 @@ function lock(idTopic)
 	}
 };
 
+//Fonction de Délock
 function delock(idTopic)
 {
 	if (isMassDelock)
@@ -149,6 +175,7 @@ function delock(idTopic)
 	}
 };
 
+//Fonction de Mass Lock
 function massLock()
 {
 	var lockConfirmation = confirm('Êtes vous sûr de vouloir BLOQUER ces question ainsi que toutes ses réponses associées ?'); 
@@ -175,6 +202,7 @@ function massLock()
 	}
 };
 
+//Fonction de Mass Délock
 function massDelock()
 {
 	var lockConfirmation = confirm('Êtes vous sûr de vouloir DÉBLOQUER ces question ainsi que toutes ses réponses associées ?'); 
@@ -201,6 +229,7 @@ function massDelock()
 	}
 };
 
+//Initialisation des boutons de lock
 function boutonLock()
 {
 	//Creation du head de la colonne.
@@ -232,6 +261,7 @@ function boutonLock()
 	}
 };
 
+//Initialisation de la colonne de séléction
 function colonneSelectionTopic()
 {
 	//Creation du head pour la colonne.
@@ -295,8 +325,4 @@ function colonneSelectionTopic()
 	document.querySelector("#cselect").appendChild(headCheckBoxSelection);
 };
 
-colonneSelectionTopic();
-interfaceBase();
-interfaceMassLock();
-interfaceMassDelock();
-boutonLock();
+init();
